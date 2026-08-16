@@ -150,7 +150,10 @@ ul{margin:0;padding:0;list-style:none}
 
 /* ---------------- portada ---------------- */
 .portada{position:relative;overflow:clip}
-.portada-capa{margin:0;position:relative;height:56vh;height:56svh;min-height:300px;background:var(--fondo)}
+/* Banda ancha, no pantalla completa. Una portada que ocupa todo el alto obliga
+   a hacer scroll antes de leer nada y, con una foto apaisada, recorta tanto que
+   se pierde la composicion (el fusil se iba por abajo). */
+.portada-capa{margin:0;position:relative;height:46vh;height:46svh;min-height:240px;max-height:420px;background:var(--fondo)}
 .portada-capa>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 42%}
 .velo{position:absolute;inset:0;background-color:#0B2433;opacity:.32}
 .credito{position:absolute;right:var(--canal);bottom:56px;z-index:2;
@@ -366,17 +369,25 @@ ul{margin:0;padding:0;list-style:none}
   .nav-menu a:hover{color:var(--texto)}
   .profundidad{display:block}
 
-  /* efecto 1: portada pegada. Sustituye al parallax; 0 JS. */
-  .portada{height:150vh;height:150svh}
-  /* sin will-change: aquí no hay ningún transform, el efecto lo hace sticky. */
-  .portada-capa{position:sticky;top:0;height:100vh;height:100svh}
-  .portada-capa>img{object-position:62% 50%}
-  /* 88px = 24 + los 64 de la barra: con scrollY=0 la capa aún no está pegada y baja
-     esos 64px, así que el pie de foto que declara la IA se salía de la primera pantalla. */
-  .credito{bottom:88px}
-  .portada-bloque{position:absolute;top:22vh;top:22svh;left:0;z-index:3;margin-top:0;
+  /* Portada: BANDA ANCHA Y BAJA, no pantalla completa.
+     La foto es apaisada; a pantalla completa hay que recortarla tanto que se
+     pierde la composición (el fusil se iba por abajo y los peces se apelotonaban
+     a la derecha). A ~440px de alto sobre 1600 de ancho la proporción visible es
+     3,6:1, que es como se mira de verdad una foto submarina.
+
+     Se quitó la portada pegada (sticky): ese efecto EXIGE una portada alta, y
+     con la banda baja dejaba medio viewport de hueco muerto debajo y partía el
+     bloque de texto por la mitad. Quedan los otros cinco efectos de scroll. */
+  .portada{height:auto}
+  .portada-capa{position:relative;height:clamp(320px,44svh,460px)}
+  .portada-capa>img{object-position:62% 46%}
+  .credito{bottom:24px}
+  /* El bloque monta sobre el pie de la foto: mantiene la sensación de capas sin
+     depender de que quepa dentro de la banda. */
+  .portada-bloque{position:relative;top:auto;left:auto;z-index:3;
+    margin-top:-72px;margin-bottom:8px;
     width:min(760px,64vw);margin-left:var(--canal);
-    background-color:rgba(11,36,51,.92);border-right:1px solid var(--borde)}
+    background-color:rgba(11,36,51,.96);border-right:1px solid var(--borde)}
 
   .diapo{flex:0 0 100%;display:grid;grid-template-columns:320px minmax(0,1fr);gap:48px;align-items:center;
     padding-inline:var(--canal)}
@@ -456,16 +467,19 @@ ul{margin:0;padding:0;list-style:none}
       <img src="assets/web/portada-960.webp"
            srcset="assets/web/portada-640.webp 640w, assets/web/portada-960.webp 960w, assets/web/portada-1280.webp 1280w"
            sizes="100vw" width="1280" height="720" fetchpriority="high" loading="eager" decoding="async"
-           alt="Ilustración submarina: banco de sargos sobre un fondo de roca, con la punta de un fusil de pesca submarina en primer plano. Imagen generada con inteligencia artificial.">
+           alt="Banco de sargos nadando sobre un fondo de roca y algas, visto desde abajo con la punta de un fusil de pesca submarina en primer plano.">
       <span class="velo" aria-hidden="true"></span>
-      <figcaption class="credito">Imagen ilustrativa generada con inteligencia artificial.</figcaption>
+      <figcaption class="credito">Fotografía de SpearoVis.</figcaption>
     </figure>
 
     <div class="portada-bloque">
       <p class="eti">Pesca submarina · España</p>
       <!-- El corte editorial solo donde cabe: por debajo de 900px forzarlo dejaba "solo"
            huérfano en su propia línea. -->
-      <h1>La app hecha solo<br class="br-ancho">para la pesca submarina</h1>
+      <!-- El espacio antes del <br> es OBLIGATORIO: en pantallas estrechas la
+           regla .br-ancho lo pone a display:none, y sin ese espacio los dos
+           trozos de texto se pegaban y salía "solopara". -->
+      <h1>La app hecha solo <br class="br-ancho">para la pesca submarina</h1>
       <div class="ticks" id="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <p class="portada-sub">Tu diario de capturas, la previsión del mar por horas, tu club y tus salidas. Y la ubicación de tus capturas no se comparte con nadie.</p>
       <div class="portada-botones">
@@ -832,7 +846,7 @@ ul{margin:0;padding:0;list-style:none}
       <!-- PENDIENTE: añadir el NIF del titular junto al nombre cuando el usuario lo facilite. -->
       <p>© 2026 SpearoVis · <a href="mailto:contacto@spearovis.es">contacto@spearovis.es</a></p>
       <p>Punto de contacto (art. 11 Reglamento UE 2022/2065): contacto@spearovis.es. Respondemos a quejas y reclamaciones en un plazo máximo de un mes.</p>
-      <p>Imagen de portada ilustrativa generada con inteligencia artificial.</p>
+      <p>Fotografías propiedad de SpearoVis. Las capturas de pantalla corresponden a la aplicación.</p>
       <p>Esta web no usa cookies, ni analítica, ni scripts de terceros.</p>
       <p>App Store es una marca de Apple Inc. Google Play es una marca de Google LLC.</p>
     </div>
