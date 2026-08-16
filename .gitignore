@@ -1,0 +1,6 @@
+# Basura de WSL al copiar desde Windows (NTFS): sin esto, un git add -A las publica
+*:Zone.Identifier
+
+# Sistema
+.DS_Store
+Thumbs.db
